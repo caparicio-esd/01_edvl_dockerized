@@ -1,0 +1,5 @@
+FROM python:3
+WORKDIR /usr/src/app
+COPY ./context-server ./context-server
+RUN pip install --no-cache-dir -r ./context-server/requirements.txt
+# RUN python ./context-server/.
