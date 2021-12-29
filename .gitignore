@@ -1,5 +1,6 @@
 
 node_modules
+data/mongo/*
 .DS_Store
 dist
 dist-ssr

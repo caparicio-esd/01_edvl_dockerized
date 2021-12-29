@@ -1,6 +1,6 @@
 import * as d3 from "d3";
-import { brushX, tree } from "d3";
-import fakeData from "./../../../Services/DataService/fakeData";
+import { brushX, line, style, tree } from "d3";
+import fakeData from "../../../Services/DataService/fakeData";
 
 module edvl {
   export class ChartFactory {
@@ -70,243 +70,210 @@ module edvl {
      *
      */
     createChart() {
+      // https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
+      //
       const data = fakeData;
 
-      // data extents
-      const dateExtent = d3.extent(data, (d) => d.date) as string[];
-      
-      //@ts-ignore
-      const dateQuantile = d3.quantile(data, 0.75, (d) => new Date(d.date));
+      //
+      const margin = { top: 20, right: 20, bottom: 40, left: 40 };
+      const w = this.sizes?.w!;
+      const h = this.sizes?.w!;
+
+      //
+      const dateExtent = d3
+        .extent(data, (d) => d.date)
+        .map((d) => new Date(d!));
       const valueExtent = d3.extent(data, (d) => d["temperature"]) as number[];
 
-      // scaleX
-      const scaleX = d3
+      //
+      const x = d3
         .scaleTime()
-        .domain([new Date(dateExtent[0]), new Date(dateExtent[1])])
-        .range([0 + this.margin.l, this.sizes!.w - this.margin.r])
-        .nice();
-
-      const fullScaleX = d3
-        .scaleTime()
-        .domain([new Date(dateExtent[0]), new Date(dateExtent[1])])
-        .range([0 + this.margin.l, this.sizes!.w - this.margin.r]);
-
-      // scaleY
-      const scaleY = d3
+        .domain(dateExtent)
+        .range([margin.left, w! - margin.right]);
+      const x2 = x.copy();
+      const y = d3
         .scaleLinear()
-        .domain([valueExtent[1] + 5, valueExtent[0] - 5])
-        .range([0 + this.margin.t, this.sizes!.h - this.margin.b])
+        .domain([valueExtent[1] + 5, 0])
+        .range([margin.top, h! - margin.bottom])
         .nice();
+      const ax = d3.axisBottom(x).ticks(10);
+      const ay = d3.axisLeft(y).ticks(10);
+      const gx = d3
+        .axisBottom(x)
+        .tickSizeInner(h! - margin.bottom - margin.top)
+        .tickFormat("" as any)
+        .ticks(10);
+      const gy = d3
+        .axisLeft(y)
+        .tickSizeInner(w! - margin.left - margin.right)
+        .tickFormat("" as any)
+        .ticks(10);
 
-      // axisX
-      // const axisX = d3.axisBottom(scaleX).ticks(10);
-
-      // axisY
-      const axisY = d3.axisLeft(scaleY).ticks(10);
-
-      // gridX
-      // const gridX = d3
-      //   .axisBottom(scaleX)
-      //   .ticks(10)
-      //   .tickSizeInner(this.sizes!.h - this.margin.b - this.margin.t)
-      //   //@ts-ignore
-      //   .tickFormat("");
-
-      // gridY
-      const gridY = d3
-        .axisLeft(scaleY)
-        .ticks(10)
-        .tickSizeInner(this.sizes!.w - this.margin.l - this.margin.r)
-        //@ts-ignore
-        .tickFormat("");
-
-      // create cover
-      const chartInner = this.chartBodySelection!.append("svg")
-        .attr("width", this.sizes!.w)
-        .attr("height", this.sizes!.h)
-        .attr("viewBox", [0, 0, this.sizes!.w, this.sizes!.h])
+      //
+      const chart = this.chartBodySelection!.append("svg")
+        .attr("width", w)
+        .attr("height", h)
+        .attr("viewBox", [0, 0, w, h])
         .attr("style", "max-width: 100%; height: auto; height: intrinsic;")
         .attr("font-family", "sans-serif")
         .attr("font-size", 10)
         .on("touchstart", (event) => event.preventDefault());
 
-      const clipPath = chartInner.append("clipPath").attr("id", "clip-path-id");
+      const chartAxes = chart.append("g").attr("class", "axes");
+      const gx_ = chartAxes
+        .append("g")
+        .attr("class", "gx")
+        .call(gx)
+        .call((g) =>
+          g
+            .style("transform", `translate(0px, ${margin.top}px)`)
+            .style("color", "#ddd")
+        )
+        .call((g) => g.select(".domain").style("visibility", "hidden"));
+      const gy_ = chartAxes
+        .append("g")
+        .attr("class", "gy")
+        .call(gy)
+        .call((g) =>
+          g
+            .style("transform", `translate(${w - margin.right}px, 0px)`)
+            .style("color", "#ddd")
+        )
+        .call((g) => g.select(".domain").style("visibility", "hidden"));
+      const ax_ = chartAxes
+        .append("g")
+        .attr("class", "ax")
+        .call(ax)
+        .call((g) =>
+          g
+            .style("transform", `translate(0px, ${h - margin.bottom}px)`)
+            .style("color", "#555")
+        );
+      const ay_ = chartAxes
+        .append("g")
+        .attr("class", "ay")
+        .call(ay)
+        .call((g) =>
+          g
+            .style("transform", `translate(${margin.left}px, 0px)`)
+            .style("color", "#555")
+        );
+
+      //
+      const chartContent = chart.append("g").attr("class", "content");
+
+      //
+      const clipPath = chart.append("clipPath").attr("id", "clip-path-id");
 
       clipPath
         .append("rect")
-        .attr("x", this.margin.l)
-        .attr("y", this.margin.t)
-        .attr("width", this.sizes!.w - this.margin.l - this.margin.r)
-        .attr("height", this.sizes!.h - this.margin.t - this.margin.b);
+        .attr("x", margin.left)
+        .attr("y", margin.top)
+        .attr("width", w - margin.left - margin.right)
+        .attr("height", h - margin.top - margin.bottom);
 
-      const gy = chartInner
-        .append("g")
-        .style("transform", `translate(${this.sizes!.w - this.margin.r}px, 0)`)
-        .style("color", "#ddd")
-        .call(gridY)
-        .call((g) => g.select(".domain").remove());
+      //
+      const lineGenerator = d3
+        .line()
+        .curve(d3.curveCardinal.tension(0.5))
+        .x((d: any) => x(new Date(d["date"])))
+        .y((d: any) => y(d["temperature"]));
 
-      // const gx = chartInner
-      //   .append("g")
-      //   .style("transform", `translate(0, ${this.margin.t}px)`)
-      //   .style("color", "#ddd")
-      //   .call(gridX)
-      //   .call((g) => g.select(".domain").remove());
-
-      const gxfn_g = chartInner
-        .append("g")
-        .style("transform", `translate(0, ${this.margin.t}px)`)
-        .style("color", "#ddd");
-
-      const gxfn = (scaleX: any) =>
-        gxfn_g.call(
-          d3
-            .axisBottom(scaleX)
-            .ticks(10)
-            .tickSizeInner(this.sizes!.h - this.margin.b - this.margin.t)
-            //@ts-ignore
-            .tickFormat("")
-        );
-
-      const gx = gxfn(scaleX);
-
-      // const ax = chartInner
-      //   .append("g")
-      //   .style("transform", `translate(0, ${this.sizes!.h - margin.b}px)`)
-      //   .style("color", "#555")
-      //   .call(axisX);
-
-      const axfn_g = chartInner
-        .append("g")
-        .style("transform", `translate(0, ${this.sizes!.h - this.margin.b}px)`)
-        .style("color", "#555");
-
-      const axfn = (scaleX: any) =>
-        axfn_g.call(d3.axisBottom(scaleX).ticks(10));
-
-      // const axisX = d3.axisBottom(scaleX).ticks(10);
-      const ax = axfn(scaleX);
-
-      const ay = chartInner
-        .append("g")
-        .style("transform", `translate(${this.margin.l}px, 0px)`)
-        .style("color", "#555")
-        .call(axisY);
-
-      // create data line function based on scale
-      const line = (data: any, scx: any, scy: any) =>
-        d3
-          .line()
-          .curve(d3.curveCardinal.tension(0.5))
-          .x((d: any) => scx(new Date(d["date"])))
-          .y((d: any) => scy(d["temperature"]))(data);
-
-      const path = chartInner
+      const path = chartContent
         .append("path")
-        //@ts-ignore
-        .attr("d", line(data, scaleX, scaleY))
+        .attr("d", lineGenerator(data as any))
         .attr("fill", "none")
         .attr("stroke", "#8fd1db")
         .attr("stroke-width", 2)
-        .attr("clip-path", `url(${window.location}#${clipPath.node()!.id})`);
+        .attr("clip-path", "url(#clip-path-id)");
 
-      // create data points
-      const circles = chartInner
+      const circles = chartContent
         .selectAll("circle")
         .data(data)
         .enter()
         .append("circle")
-        .attr("cx", (d) => scaleX(new Date(d.date)))
-        .attr("cy", (d) => scaleY(d["temperature"]))
+        .attr("cx", (d) => x(new Date(d.date)))
+        .attr("cy", (d) => y(d["temperature"]))
         .attr("r", 3)
         .attr("fill", "#0d7490")
         .attr("fill-opacity", 0.8)
-        .attr("clip-path", `url(${window.location}#${clipPath.node()!.id})`);
+        .attr("clip-path", "url(#clip-path-id)");
 
-      const zoomable = (ev: any) => {
-        const scaleX_ = ev.transform.rescaleX(scaleX);
-        path.attr("d", line(data, scaleX_, scaleY));
+      //
+      const complete = this.chartBrushSelection!.append("svg")
+        .attr("width", w)
+        .attr("height", 5)
+        .attr("viewBox", [0, 0, w, 5])
+        .attr(
+          "style",
+          "max-width: 100%; height: auto; height: intrinsic; overflow: visible"
+        )
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 10)
+        .on("touchstart", (event: any) => event.preventDefault());
+
+      const completeAxes = complete
+        .append("g")
+        .attr("class", "axes")
+
+      //
+      const updateZoomAndBrush = () => {
+        path.attr("d", lineGenerator(data as any));
         circles
-          .attr("cx", (d) => scaleX_(new Date(d.date)))
-          .attr("cy", (d) => scaleY(d["temperature"]));
-        axfn(scaleX_);
-        gxfn(scaleX_);
+          .attr("cx", (d) => x(new Date(d.date)))
+          .attr("cy", (d) => y(d["temperature"]));
+        ax_.call(ax);
+        gx_.call(gx);
       };
 
-      // addBrush, pan, zoom      
-      const zoom = d3
-        .zoom()
-        .extent([
-          [this.margin.l, 0],
-          [this.sizes!.w - this.margin.r, this.sizes!.h],
-        ])
-        .translateExtent([
-          [scaleX(new Date(dateExtent[0])) - this.margin.l, 0],
-          [scaleX(new Date(dateExtent[1])) + this.margin.r, 0],
-        ])
-        .scaleExtent([1, 32])
-        .on("zoom", zoomable);
-
-      //@ts-ignore
-      chartInner.call(zoom)
-
+      //
       const brush = d3
         .brushX()
         .extent([
-          [0, 0],
-          [this.sizes!.w - this.margin.l * 2 - this.margin.r * 1.5, 5],
+          [margin.left, 0],
+          [w - margin.right, 10],
         ])
-        .on("brush", (ev) => {
-          //https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
-          if (ev.selection) {
-            const k_x = fullScaleX.range()[1] / (ev.selection[1] - ev.selection[0])
-            const t_x = -ev.selection[1]
+        .on("brush end", (ev) => {
+          if (ev.sourceEvent == undefined) return;
+          const s = ev.selection;
+          x.domain(s.map(x2.invert, x2));
+          updateZoomAndBrush();
+          chart.call(
+            zoom.transform as any,
+            d3.zoomIdentity.scale(w / (s[1] - s[0])).translate(-s[0], 0)
+          );
+        });
 
-            // console.log(k_x);
-            
+      //
+      const zoom = d3
+        .zoom()
+        .scaleExtent([1, Infinity])
+        .translateExtent([
+          [0, 0],
+          [w, h],
+        ])
+        .extent([
+          [0, 0],
+          [w, h],
+        ])
+        .on("zoom", (ev) => {
+          if (ev.sourceEvent == undefined) return;
+          var t = ev.transform;
+          x.domain(t.rescaleX(x2).domain());
+          updateZoomAndBrush();
+          complete.call(brush.move as any, x.range().map(t.invertX, t));
+        });
 
+      //
+      const defaultBrush = [x(new Date(data[50].date)), x(dateExtent[1])];
 
-            // chartInner.call(
-            //   zoom.transform as any,
-            //   d3.zoomIdentity.scale(k_x).translate(t_x, 0)
-            // );
-          }
-        })
-        // .on("end", (ev) => {
-        //   if (!ev.selection) {
-        //     brushInner.call(brush.move, defaultBrush);
-        //   }
-        // });
-
-      const bScaleX = d3
-        .scaleTime()
-        .domain([new Date(dateExtent[0]), new Date(dateExtent[1])])
-        .range([0, this.sizes!.w - this.margin.l * 2 - this.margin.r * 1.5])
-
-      const defaultBrush = [
-        bScaleX(new Date(dateQuantile!)),
-        bScaleX(new Date(dateExtent[1])),
-      ];
-
-      const brushOuter = this.chartBrushSelection
-        .append("svg")
-        .style(
-          "width",
-          `${this.sizes!.w - this.margin.l * 2 - this.margin.r * 1.5}px`
-        )
-        .style("overflow", "visible")
-        .style("margin-left", `${this.margin.l}px`)
-        .style("height", `${5}px`)
-        .style("background-color", "#ddd");
-
-      const brushInner = brushOuter
-        .append("g")
-        .call(brush)
-        .call((g) => {
-          g.select(".selection").style("fill", "#1e1e1e");
-          g.selectAll(".handle").style("fill", "#555");
-        })
-        .call(brush.move, defaultBrush);
+      //
+      chart.call(zoom as any);
+      completeAxes.call(brush as any)
+      .call(g => {
+        g.select(".overlay").style("fill", "#eee")
+      });
+      completeAxes.call(brush.move as any, x.range());
     }
     updateChart() {}
     destroyChart() {}
