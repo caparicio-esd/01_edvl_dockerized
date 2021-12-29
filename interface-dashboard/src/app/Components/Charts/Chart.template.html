@@ -1,0 +1,15 @@
+<div class="chart h-full w-full flex flex-col">
+  <div class="chart_header flex justify-between items-center pl-6 pr-3 text-xs mb-1">
+    <div class="chart_label_y">
+        <input type="text" class="font-bold outline-none" ng-model="chartLabels.y" placeholder="Label for Y">
+    </div>
+    <div class="chart_label_source">
+      <input type="text" class="text-right italic outline-none" ng-model="chartLabels.source" placeholder="Source data">
+    </div>
+  </div>
+  <div class="chart_body flex-1 w-full"></div>
+  <div class="chart_label_x font-bold flex justify-center mt-1 mb-2">
+    <input type="text" class="font-bold outline-none text-xs text-center" ng-model="chartLabels.x" placeholder="Label for X">
+  </div>
+  <div class="chart_brush py-2 "></div>
+</div>
