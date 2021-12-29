@@ -1,0 +1,28 @@
+[class^="edvl-"] {
+  display: block;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid tomato;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.debug {
+  &, * {
+    @apply border border-solid border-red-400;
+  }
+}
+
+.dashboard_item {
+  width: 90%; 
+  max-width: 1180px;
+  min-height: 600px;
+}
+

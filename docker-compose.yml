@@ -1,0 +1,104 @@
+version: '3.9'
+
+# https://stackoverflow.com/questions/42232051/docker-compose-volumes-from-equivalent-with-version-3
+
+services: 
+    orion: 
+        image: fiware/orion:latest
+        container_name: orion
+        hostname: orion
+        ports: 
+            - "1026:1026"
+        env_file: ${PWD}/.env
+        command: -logLevel DEBUG -noCache -dbhost mongo -dbuser ${DBUSER} -dbpwd ${DBPASS} -dbAuthDb admin
+        depends_on: 
+            - mongo
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://0.0.0.0:1026/version"]
+            interval: 1m
+            timeout: 10s
+            retries: 3
+
+    mongo: 
+        image: mongo:latest
+        container_name: mongo
+        hostname: mongo
+        env_file: ${PWD}/.env
+        ports: 
+            - "27017:27017"
+        volumes: 
+            - ${PWD}/data/mongo:/data/db
+        environment: 
+            - "MONGO_INITDB_ROOT_USERNAME=${DBUSER}"
+            - "MONGO_INITDB_ROOT_PASSWORD=${DBPASS}"
+    
+    # zeppelin: 
+    #     image: ging/zeppelin
+    #     user: 'root'
+    #     container_name: zeppelin
+    #     depends_on: 
+    #         - mongo
+    #     ports: 
+    #         - "8080:8080"
+    #         - "9000:9000"
+    #     volumes: 
+    #         - ${PWD}/zeppelin/conf:/opt/zeppelin/conf
+    #         - ${PWD}/zeppelin/logs:/opt/zeppelin/logs
+    #         - ${PWD}/zeppelin/lib:/opt/zeppelin/dependencies
+    #         # - ${PWD}/zeppelin/helium:/opt/zeppelin/helium
+    #     environment: 
+    #         - "ZEPPELIN_NOTEBOOK_MONGO_URI=mongodb://${DBUSER}:${DBPASS}@mongo:27017"
+    #         - "ZEPPELIN_NOTEBOOK_MONGO_DATABASE=zeppelin"
+    #         - "ZEPPELIN_NOTEBOOK_MONGO_AUTOIMPORT=true"
+    #         - "ZEPPELIN_NOTEBOOK_STORAGE=org.apache.zeppelin.notebook.repo.MongoNotebookRepo"
+    #         - "ZEPPELIN_LOG_DIR=/opt/zeppelin/logs"
+    #         # - "SPARK_SUBMIT_OPTIONS= --packages org.mongodb.spark:mongo-spark-connector_2.11:2.4.2 --jars /zeppelin/dependencies/orion.spark.connector-1.3.0.jar,/zeppelin/dependencies/mongo-spark-connector_2.11-2.4.2.jar", 
+    #         # - "ZEPPELIN_HELIUM_LOCALREGISTRY_DEFAULT=/opt/zeppelin/helium"
+
+    devices:
+        image: python:latest
+        container_name: devices
+        hostname: devices
+        env_file: ${PWD}/.env
+        build: 
+            context: ${PWD}
+            dockerfile: Dockerfile-devices
+        depends_on: 
+            - orion
+        command: python ./context-server/.
+
+    interface-server: 
+        image: node:16-alpine
+        container_name: interface-server
+        hostname: interface-server
+        env_file: ${PWD}/.env
+        volumes: 
+            - ${PWD}/interface-server:/usr/src/app
+        depends_on:
+          - orion
+        ports:
+          - "1027:1027"
+        command: yarn --cwd /usr/src/app/ start
+
+    interface-dashboard:
+        image: node:16-alpine
+        container_name: interface-dashboard
+        hostname: interface-dashboard
+        env_file: ${PWD}/.env
+        depends_on:
+          - interface-server
+        ports:
+          - "3001:3001"
+        volumes: 
+            - ${PWD}/interface-dashboard:/usr/src/app
+        command: bash -c "
+                yarn --cwd /usr/src/app
+                && yarn --cwd /usr/src/app dev
+            "
+        
+
+networks: 
+    default:
+
+volumes: 
+    mongobin:
