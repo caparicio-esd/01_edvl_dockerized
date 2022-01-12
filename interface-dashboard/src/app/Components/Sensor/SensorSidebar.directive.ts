@@ -1,19 +1,13 @@
-import fakeDevices from "./FakeDevices";
 import template from "./SensorSidebar.template.html?raw";
 
 module edvl.SensorSidebarDirective {
   export interface IScope extends ng.IScope {
-    devices: any[];
+    devices: any;
   }
   export interface IDirectiveController extends ng.IController {}
   export class Controller implements IDirectiveController {
     public static $inject = ["$scope"];
-    constructor(
-      private $scope: IScope,
-      private $location_: ng.ILocationService
-    ) {
-      this.$scope.devices = fakeDevices;
-    }
+    constructor(private $scope: IScope) {}
     public $onInit() {}
     public $postLink() {}
     public $doCheck() {}
@@ -28,12 +22,13 @@ module edvl.SensorSidebarDirective {
     replace = true;
     transclude = true;
     restrict = "E";
+    // bindToController = true;
     public static slug = "sensorSidebar";
     public static instance(): ng.IDirectiveFactory {
       return () => new Directive();
     }
     scope = {
-      focas: "=",
+      devices: "=",
     };
   }
 }

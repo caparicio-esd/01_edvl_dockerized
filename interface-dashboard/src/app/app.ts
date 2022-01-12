@@ -1,5 +1,5 @@
 import angular from "angular";
-import { AppController } from "./app.controller";
+import angularDragula from "angularjs-dragula";
 import ChartDirective from "./Components/Charts/Chart.directive";
 import ChartTypeDirective from "./Components/Charts/ChartType.directive";
 import MapDirective from "./Components/Charts/Map.directive";
@@ -13,7 +13,6 @@ import ConfigSidebarDirective from "./Components/Config/ConfigSidebar.directive"
 import DashBoardItemDirective from "./Components/DashBoardItem/DashBoardItem.directive";
 import dummyDirective from "./Components/Dummy.directive/dummy.directive";
 import dummySimpleDirective from "./Components/Dummy.directive/dummySimple.directive";
-import HomeDirective from "./Components/Home.directive/Home.directive";
 import MainBlockDirective from "./Components/MainBlock/MainBlock.directive";
 import MainBlockHeadingDirective from "./Components/MainBlock/MainBlockHeading.directive";
 import SensorSidebarDirective from "./Components/Sensor/SensorSidebar.directive";
@@ -21,16 +20,13 @@ import ConfigService from "./Services/ConfigService/ConfigService.service";
 import DistilledDataService from "./Services/DataService/DistilledDataService.service";
 import OrionConnectionService from "./Services/DataService/OrionConnectionService.service";
 import RawDataService from "./Services/DataService/RawDataService.service";
-import DummyService from "./Services/Dummy/Dummy.service";
 
 export default angular
-  .module("edvl", [])
-  .controller("AppController", AppController.Controller)
+  .module("edvl", [angularDragula(angular)])
   
   .directive(dummyDirective.slug, dummyDirective.instance())
   .directive(dummySimpleDirective.slug, dummySimpleDirective.instance())
   .directive(DashBoardItemDirective.slug, DashBoardItemDirective.instance())
-  .directive(HomeDirective.slug, HomeDirective.instance())
   .directive(SensorSidebarDirective.slug, SensorSidebarDirective.instance())
   .directive(SideHeadingDirective.slug, SideHeadingDirective.instance())
   .directive(AccordionDirective.slug, AccordionDirective.instance())
@@ -45,8 +41,8 @@ export default angular
   .directive(TableDirective.slug, TableDirective.instance())
   .directive(MapDirective.slug, MapDirective.instance())
 
-  .service(DummyService.name, DummyService)
   .service(ConfigService.name, ConfigService)
   .service(RawDataService.name, RawDataService)
   .service(DistilledDataService.name, DistilledDataService)
   .service(OrionConnectionService.name, OrionConnectionService)
+

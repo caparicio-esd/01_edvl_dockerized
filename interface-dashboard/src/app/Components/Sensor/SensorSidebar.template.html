@@ -4,7 +4,7 @@
     <!-- device type -->
     <div
       class="accordion_type"
-      ng-repeat="deviceType in vm.$scope.devices track by device.name"
+      ng-repeat="deviceType in devices track by $index"
     >
       <accordion accordion-data="deviceType" index="$index">
         <accordion-handler>{{deviceType.name}}</accordion-handler>

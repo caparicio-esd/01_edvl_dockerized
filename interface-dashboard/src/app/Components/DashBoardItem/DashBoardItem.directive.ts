@@ -1,14 +1,27 @@
+import DistilledDataService from "../../Services/DataService/DistilledDataService.service";
+import RawDataService from "../../Services/DataService/RawDataService.service";
+
 import template from "./DashBoardItem.template.html?raw";
 
 module edvl.DashBoardItemDirective {
-  export interface IScope extends ng.IScope {}
+  export interface IScope extends ng.IScope {
+    devices: any;
+  }
   export interface IDirectiveController extends ng.IController {}
   export class Controller implements IDirectiveController {
-    public static $inject = ["$scope"];
+    public static $inject = ["$scope", "DistilledDataService", "RawDataService"];
     constructor(
       private $scope: IScope,
-      private $location_: ng.ILocationService
-    ) {}
+      private distilledDataService: DistilledDataService, 
+      private rawDataService: RawDataService
+    ) {
+      const self = this
+      this.$scope.devices = [];
+      this.distilledDataService.addObserver(() => {         
+        self.$scope.devices = self.distilledDataService.devices;
+        self.$scope.$digest();        
+      });
+    }
     public $onInit() {}
     public $postLink() {}
     public $doCheck() {}
@@ -27,9 +40,7 @@ module edvl.DashBoardItemDirective {
     public static instance(): ng.IDirectiveFactory {
       return () => new Directive();
     }
-    scope = {
-      focas: "=",
-    };
+    scope = {};
   }
 }
 
