@@ -23,7 +23,6 @@ import RawDataService from "./Services/DataService/RawDataService.service";
 
 export default angular
   .module("edvl", [angularDragula(angular)])
-  
   .directive(dummyDirective.slug, dummyDirective.instance())
   .directive(dummySimpleDirective.slug, dummySimpleDirective.instance())
   .directive(DashBoardItemDirective.slug, DashBoardItemDirective.instance())

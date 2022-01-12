@@ -1,4 +1,6 @@
-<div class="sensor_sidebar col-span-3 bg-slate-200 border-r-2 border-solid border-slate-300 h-full">
+<div
+  class="sensor_sidebar col-span-3 bg-slate-200 border-r-2 border-solid border-slate-300 h-full relative"
+>
   <side-heading title="'Devices'" icon="'ph-robot'"></side-heading>
   <div class="side_body p-2">
     <!-- device type -->
@@ -11,13 +13,18 @@
         <accordion-body>
           <!-- device item -->
           <div
-            class="accordion_device"
+            class="accordion_device relative"
             ng-repeat="device in deviceType.content track by device.id"
           >
             <accordion accordion-data="device" index="$index">
               <accordion-handler>{{device.id}}</accordion-handler>
               <accordion-body>
-                <device-tag ng-repeat="attr in device.attributes" data="attr"></device-tag>
+                <div dragula='"a"'>
+                  <device-tag
+                    ng-repeat="attr in device.attributes"
+                    data="attr"
+                  ></device-tag>
+                </div>
               </accordion-body>
             </accordion>
           </div>
