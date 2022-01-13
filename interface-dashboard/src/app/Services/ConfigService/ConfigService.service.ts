@@ -2,10 +2,10 @@ import chartsData from "./ChartsData";
 
 module edvl {
   export class ConfigService {
-    public static $inject = [];
+    public static $inject = ["dragulaService"];
     chartsData: any;
     selectedChartType: string;
-    constructor() {
+    constructor(private dragulaService: any) {
       // TODO refactor into classes
       this.chartsData = chartsData;
       this.selectedChartType = "line-timeseries";
@@ -14,12 +14,12 @@ module edvl {
       this.selectedChartType = chartType;
     }
     public getChartDataById(id: string) {
-      const chartType = this.chartsData.find((ch:any) => ch.id == id)
-      return chartType
+      const chartType = this.chartsData.find((ch: any) => ch.id == id);
+      return chartType;
     }
     public getAttributesById(id: string) {
-      const chartType = this.getChartDataById(id)
-      return chartType.attributes
+      const chartType = this.getChartDataById(id);
+      return chartType.attributes;
     }
   }
 }

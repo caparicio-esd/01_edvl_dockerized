@@ -1,3 +1,4 @@
+import { IRootScopeService } from "angular";
 import template from "./SensorSidebar.template.html?raw";
 
 module edvl.SensorSidebarDirective {
@@ -6,8 +7,8 @@ module edvl.SensorSidebarDirective {
   }
   export interface IDirectiveController extends ng.IController {}
   export class Controller implements IDirectiveController {
-    public static $inject = ["$scope"];
-    constructor(private $scope: IScope) {}
+    public static $inject = ["$rootScope"];
+    constructor(private $rootScope: IRootScopeService) {}
     public $onInit() {}
     public $postLink() {}
     public $doCheck() {}

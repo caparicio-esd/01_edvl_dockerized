@@ -15,14 +15,16 @@
       </span>
       <span class="label flex items-center">{{attribute.name}}</span>
     </h3>
+    {{attribute.content}}
     <div
-      class="
-        chart_config_block_content
-        border border-solid border-slate-300
-        bg-slate-50
-        rounded
-        h-20
-      "
-    ></div>
+      class="chart_config_block_content border border-solid border-slate-300 bg-slate-50 rounded h-20"
+    >
+      <div dragula="'a'" class="h-full debug dragula_chartBlocks" dragula-scope="vm.$rootScope" dragula-model="attribute.content">
+        <device-tag
+          ng-repeat="attr in attribute.content"
+          data="attr"
+        ></device-tag>
+      </div>
+    </div>
   </div>
 </div>

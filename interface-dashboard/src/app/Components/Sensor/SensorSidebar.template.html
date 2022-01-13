@@ -19,7 +19,7 @@
             <accordion accordion-data="device" index="$index">
               <accordion-handler>{{device.id}}</accordion-handler>
               <accordion-body>
-                <div dragula='"a"'>
+                <div dragula="'a'" dragula-model="device.attributes" dragula-scope="vm.$rootScope">
                   <device-tag
                     ng-repeat="attr in device.attributes"
                     data="attr"
