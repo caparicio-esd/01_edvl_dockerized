@@ -8,7 +8,7 @@ export interface Observable {
 
 module edvl {
   export class DistilledDataService implements Observable {
-    maxQueueSize: number = 20;
+    maxQueueSize: number = 150;
     queuedData!: any[];
     devices!: any;
     observers!: (() => void)[];
@@ -76,7 +76,7 @@ module edvl {
       });
     }
 
-    private extractAttributes(data: any): any[] {
+    private extractAttributes(data: any): any[] {      
       const attributes: any[] = [];
       const avoid = ["type"];
       const entries = Object.entries(data);
@@ -87,6 +87,10 @@ module edvl {
             name: entry[0],
             type: (entry[1] as any).type,
             metadata: (entry[1] as any).metadata,
+            device: {
+              type: data.type, 
+              id: data.id
+            }
           });
         });
       return attributes;
