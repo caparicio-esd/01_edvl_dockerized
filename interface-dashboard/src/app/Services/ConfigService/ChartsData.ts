@@ -32,23 +32,13 @@ export default [
     realtime: false,
     attributes: [
       {
-        name: "Latitude",
-        id: "latitude",
-        content: [],
-      },
-      {
-        name: "Longitude",
-        id: "longitude",
+        name: "Location",
+        id: "location",
         content: [],
       },
       {
         name: "Size",
         id: "size",
-        content: [],
-      },
-      {
-        name: "Category",
-        id: "category",
         content: [],
       },
     ],

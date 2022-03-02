@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "angular": "^1.8.2",
+    "angular-ui-grid": "^4.11.0",
     "angularjs-dragula": "^2.0.0",
     "d3": "^7.2.1",
     "phosphor-icons": "^1.4.1",

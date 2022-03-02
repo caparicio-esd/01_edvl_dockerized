@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import { brushX, line, style, tree } from "d3";
-import fakeData from "../../../Services/DataService/fakeData";
+import DistilledDataService from "../../Services/DataService/DistilledDataService.service";
+import fakeData from "../../Services/DataService/fakeData";
 
 module edvl {
   export class ChartFactory {
@@ -40,7 +41,7 @@ module edvl {
         r: this.marginAmount / 2,
         b: this.marginAmount,
         l: this.marginAmount,
-      };
+      };      
     }
     public static factory(): ChartFactory {
       return new ChartFactory();
@@ -275,7 +276,9 @@ module edvl {
       });
       completeAxes.call(brush.move as any, x.range());
     }
-    updateChart() {}
+    updateChart(distilledData: DistilledDataService) {
+      console.log(distilledData);
+    }
     destroyChart() {}
   }
 }

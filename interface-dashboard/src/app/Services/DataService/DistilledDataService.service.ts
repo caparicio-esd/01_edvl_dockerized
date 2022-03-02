@@ -12,12 +12,14 @@ module edvl {
     queuedData!: any[];
     devices!: any;
     observers!: (() => void)[];
+    lastDataEvent!: any;
 
     public static $inject = [];
     constructor() {
       this.queuedData = [];
       this.devices = [];
       this.observers = [];
+      this.lastDataEvent = {}
     }
 
     public addObserver(callback: () => void): void {      
@@ -30,7 +32,7 @@ module edvl {
       });
     }
 
-    public processIncomingData(data: any) {
+    public processIncomingData(data: any) {      
       const innerData = data.data[0];
       if (this.queuedData.length >= this.maxQueueSize) {
         this.queuedData.shift();
@@ -41,7 +43,8 @@ module edvl {
       if (!this.hasDeviceId(innerData)) {
         this.addDevice(innerData);
       }
-      this.queuedData.push(innerData);      
+      this.queuedData.push(innerData);     
+      this.lastDataEvent = innerData 
       this.notifyObservers();
     }
 

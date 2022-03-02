@@ -308,7 +308,14 @@ acorn@^7.0.0:
   resolved "https://registry.npmjs.org/acorn/-/acorn-7.4.1.tgz"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
-angular@^1.8.2:
+angular-ui-grid@^4.11.0:
+  version "4.11.0"
+  resolved "https://registry.npmjs.org/angular-ui-grid/-/angular-ui-grid-4.11.0.tgz"
+  integrity sha512-usd0hNaDLUh/U6cUEGNLOxKfuYI7ylrmynlVUsfoeBf6APjrJ4+uyjDxewzl70OOeZ1bPMARZTEFHfanlzBOYw==
+  dependencies:
+    angular ">=1.4.0 1.8.x"
+
+"angular@>=1.4.0 1.8.x", angular@^1.8.2:
   version "1.8.2"
   resolved "https://registry.npmjs.org/angular/-/angular-1.8.2.tgz"
   integrity sha512-IauMOej2xEe7/7Ennahkbb5qd/HFADiNuLSESz9Q27inmi32zB0lnAsFeLEWcox3Gd1F6YhNd1CP7/9IukJ0Gw==
@@ -930,7 +937,7 @@ esbuild-darwin-64@0.13.15:
 
 esbuild-darwin-arm64@0.13.15:
   version "0.13.15"
-  resolved "https://registry.yarnpkg.com/esbuild-darwin-arm64/-/esbuild-darwin-arm64-0.13.15.tgz#1b07f893b632114f805e188ddfca41b2b778229a"
+  resolved "https://registry.npmjs.org/esbuild-darwin-arm64/-/esbuild-darwin-arm64-0.13.15.tgz"
   integrity sha512-i1FZssTVxUqNlJ6cBTj5YQj4imWy3m49RZRnHhLpefFIh0To05ow9DTrXROTE1urGTQCloFUXTX8QfGJy1P8dQ==
 
 esbuild-freebsd-64@0.13.15:
@@ -1078,7 +1085,7 @@ fs.realpath@^1.0.0:
 
 fsevents@~2.3.2:
   version "2.3.2"
-  resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
   integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
 
 function-bind@^1.1.1:

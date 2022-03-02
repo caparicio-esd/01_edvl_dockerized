@@ -1,32 +1,51 @@
-import angular from "angular";
+import ConfigService from "../../Services/ConfigService/ConfigService.service";
+import DistilledDataServiceService from "../../Services/DataService/DistilledDataService.service";
 import template from "./Chart.template.html?raw";
-import ChartFactory from "./ChartFactory/Chart.factory";
+import TimeSeries from "./ChartFactory/TimeSeries";
 
 module edvl.ChartDirective {
   export interface IScope extends ng.IScope {
-    chartLabels: { x: string; y: string; source: string; };
-    chart: ChartFactory;
+    distilledData: DistilledDataServiceService;
+    configData: any[];
+    chartLabels: { x: string; y: string; source: string };
+    chart: TimeSeries;
     chartBind: HTMLDivElement | null;
   }
   export interface IDirectiveController extends ng.IController {}
   export class Controller implements IDirectiveController {
-    public static $inject = ["$scope"];
-    constructor(private $scope: IScope) {
+    public static $inject = ["$scope", "DistilledDataService", "ConfigService"];
+    constructor(
+      private $scope: IScope,
+      private distilledDataService: DistilledDataServiceService,
+      private configService: ConfigService
+    ) {
       this.$scope.chartLabels = {
         x: "Updated time",
         y: "Temperature",
-        source: "source..."
-      }
-      this.$scope.chart = ChartFactory.factory();
+        source: "source...",
+      };
       this.$scope.chartBind = document.querySelector<HTMLDivElement>(".chart");
-      this.$scope.chart.setDomComponent(this.$scope.chartBind);
-      this.$scope.chart.createChart();
+      this.$scope.chart = new TimeSeries(this.$scope.chartBind);
+      this.$scope.configData = configService.getAttributesById(
+        configService.selectedChartType
+      )[0].content;
+      this.$scope.distilledData = distilledDataService;
+
+      // add remove colummns observer
+      this.$scope.$watchCollection("configData", () => {
+        this.$scope.chart.update(null, this.$scope.configData);
+      });
+
+      // add queued data observer
+      this.$scope.$watchCollection("distilledData.queuedData", () => {
+        const shouldUpdate = this.$scope.configData.some((cd) => {
+          return cd.device.id == this.distilledDataService.lastDataEvent.id;
+        });
+        if (shouldUpdate) {
+          this.$scope.chart.update(this.distilledDataService.lastDataEvent, this.$scope.configData);
+        }
+      });
     }
-    public $onInit() {}
-    public $postLink() {}
-    public $doCheck() {}
-    public $onChanges(_: ng.IOnChangesObject) {}
-    public $onDestroy() {}
   }
 
   export class Directive implements ng.IDirective {

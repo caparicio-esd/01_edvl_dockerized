@@ -14,11 +14,6 @@ module edvl.ConfigChartTypeDirective {
     ) {
       this.$scope.configService = ConfigService;
     }
-    public $onInit() {}
-    public $postLink() {}
-    public $doCheck() {}
-    public $onChanges(_: ng.IOnChangesObject) {}
-    public $onDestroy() {}
   }
 
   export class Directive implements ng.IDirective {

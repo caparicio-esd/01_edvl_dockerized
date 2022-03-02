@@ -1,3 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
 [class^="edvl-"] {
   display: block;
   margin: 0;
@@ -10,19 +19,15 @@
   display: none !important;
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 .debug {
   &, * {
     @apply border border-solid border-red-400;
   }
 }
 
-.dashboard_item {
+/* .dashboard_item {
   width: 90%; 
   max-width: 1180px;
   min-height: 600px;
-}
+} */
 

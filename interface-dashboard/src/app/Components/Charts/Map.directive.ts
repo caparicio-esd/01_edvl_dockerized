@@ -6,11 +6,6 @@ module edvl.MapDirective {
   export class Controller implements IDirectiveController {
     public static $inject = ["$scope"];
     constructor(private $scope: IScope) {}
-    public $onInit() {}
-    public $postLink() {}
-    public $doCheck() {}
-    public $onChanges(_: ng.IOnChangesObject) {}
-    public $onDestroy() {}
   }
 
   export class Directive implements ng.IDirective {

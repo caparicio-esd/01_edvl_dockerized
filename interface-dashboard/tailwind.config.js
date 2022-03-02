@@ -1,7 +1,16 @@
 module.exports = {
-  content: ["./src/**/*.{html,js}"],
+  content: ["./*.{html,js}", "./src/**/*.{html,js}"],
   theme: {
-    extend: {},
+    fontFamily: {
+      sans: ['"Roboto"'],
+    },
+    extend: {
+      fontSize: {
+        "xs": ".75rem", 
+        "xxs": ".65rem",
+        "sm": ".8rem"
+      }
+    },
   },
   plugins: [],
 }

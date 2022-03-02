@@ -1,15 +1,19 @@
+import { IRootScopeService } from "angular";
+import { Observable } from "../DataService/DistilledDataService.service";
 import chartsData from "./ChartsData";
 
 module edvl {
   export class ConfigService {
-    public static $inject = ["dragulaService"];
+    public static $inject = ["$rootScope"];
     chartsData: any;
     selectedChartType: string;
-    constructor(private dragulaService: any) {
-      // TODO refactor into classes
+
+    constructor(private $rootScope: IRootScopeService) {
       this.chartsData = chartsData;
-      this.selectedChartType = "line-timeseries";
+      // this.selectedChartType = "table";
+      this.selectedChartType = "line-timeseries"
     }
+ 
     public selectChartType(chartType: string) {
       this.selectedChartType = chartType;
     }

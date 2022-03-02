@@ -4,6 +4,8 @@ import { IRootScopeService } from "angular";
 
 module edvl.ConfigChartBlocksDirective {
   export interface IScope extends ng.IScope {
+    dragulaScope: {};
+    jarl: any[];
     attrs: any;
     configService: ConfigServiceService;
   }
@@ -21,13 +23,12 @@ module edvl.ConfigChartBlocksDirective {
       private ConfigService: ConfigServiceService,
       private dragulaService: any
     ) {
-      const self = this;
+
       this.$scope.configService = ConfigService;
+      this.$scope.dragulaScope = []
       this.$scope.attrs = ConfigService.getAttributesById(
         ConfigService.selectedChartType
       );
-
-      // config hereee!!
       dragulaService.options($rootScope, "a", {
         removeOnSpill: (_: HTMLElement, source: HTMLElement) => {
           return !source.classList.contains("dragula_chartBlocks");
@@ -39,23 +40,11 @@ module edvl.ConfigChartBlocksDirective {
           return source.classList.contains("dragula_chartBlocks");
         },
       });
-
-      this.$rootScope.$on("a.drag", function (ev, el, container) {
-        console.log(ev, el, container);
-      });
-      this.$rootScope.$on("a.drop", function (ev, el, container) {
-        console.log(ev, el, container);
-      });
     }
     public getAttributes() {
       const selectedChartType = this.$scope.configService.selectedChartType;
       return this.$scope.configService.getAttributesById(selectedChartType);
     }
-    public $onInit() {}
-    public $postLink() {}
-    public $doCheck() {}
-    public $onChanges(_: ng.IOnChangesObject) {}
-    public $onDestroy() {}
   }
 
   export class Directive implements ng.IDirective {
