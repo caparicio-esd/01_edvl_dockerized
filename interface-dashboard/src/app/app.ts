@@ -15,8 +15,6 @@ import ConfigChartBlocksDirective from "./Components/Config/ConfigChartBlocks.di
 import ConfigChartTypeDirective from "./Components/Config/ConfigChartType.directive";
 import ConfigSidebarDirective from "./Components/Config/ConfigSidebar.directive";
 import DashBoardItemDirective from "./Components/DashBoardItem/DashBoardItem.directive";
-import dummyDirective from "./Components/Dummy.directive/dummy.directive";
-import dummySimpleDirective from "./Components/Dummy.directive/dummySimple.directive";
 import MainBlockDirective from "./Components/MainBlock/MainBlock.directive";
 import MainBlockHeadingDirective from "./Components/MainBlock/MainBlockHeading.directive";
 import SensorSidebarDirective from "./Components/Sensor/SensorSidebar.directive";
@@ -27,8 +25,6 @@ import RawDataService from "./Services/DataService/RawDataService.service";
 
 export default angular
   .module("edvl", [angularDragula(angular), uiGrid, "nemLogging", "ui-leaflet"])
-  .directive(dummyDirective.slug, dummyDirective.instance())
-  .directive(dummySimpleDirective.slug, dummySimpleDirective.instance())
   .directive(DashBoardItemDirective.slug, DashBoardItemDirective.instance())
   .directive(SensorSidebarDirective.slug, SensorSidebarDirective.instance())
   .directive(SideHeadingDirective.slug, SideHeadingDirective.instance())
