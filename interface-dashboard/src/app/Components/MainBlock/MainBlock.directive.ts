@@ -5,9 +5,7 @@ module edvl.MainBlockDirective {
   export interface IDirectiveController extends ng.IController {}
   export class Controller implements IDirectiveController {
     public static $inject = ["$scope"];
-    constructor(
-      private $scope: IScope,
-    ) {}
+    constructor(private $scope: IScope) {}
     public $onInit() {}
     public $postLink() {}
     public $doCheck() {}

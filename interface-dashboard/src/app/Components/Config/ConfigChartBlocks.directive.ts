@@ -1,6 +1,8 @@
 import template from "./ConfigChartBlocks.template.html?raw";
 import ConfigServiceService from "../../Services/ConfigService/ConfigService.service";
 import { IRootScopeService } from "angular";
+import { schemeTableau10 } from "d3";
+console.log(schemeTableau10);
 
 module edvl.ConfigChartBlocksDirective {
   export interface IScope extends ng.IScope {
@@ -23,12 +25,12 @@ module edvl.ConfigChartBlocksDirective {
       private ConfigService: ConfigServiceService,
       private dragulaService: any
     ) {
-
       this.$scope.configService = ConfigService;
-      this.$scope.dragulaScope = []
+      this.$scope.dragulaScope = [];
       this.$scope.attrs = this.ConfigService.getAttributesById(
         ConfigService.selectedChartType
       );
+
       this.dragulaService.options(this.$rootScope, "a", {
         removeOnSpill: (_: HTMLElement, source: HTMLElement) => {
           return !source.classList.contains("dragula_chartBlocks");
@@ -40,9 +42,38 @@ module edvl.ConfigChartBlocksDirective {
           return source.classList.contains("dragula_chartBlocks");
         },
       });
+
+      // colors in new tabs
+      const getTheDataAttrsContent = () => {
+        const activeIndex = this.$scope.configService.getActiveChartDataIndex();
+        const chartsData = this.$scope.configService.chartsData[activeIndex];
+        const chartDataAttrs = chartsData.attributes;
+        return chartDataAttrs
+      }
+      this.$rootScope.$on("a.drop-model", (ev, target, source) => {
+        getTheDataAttrsContent().forEach((c: any) => {
+          c.content.forEach((ca: any) => {
+            if (!ca.color) {
+              ca.color = schemeTableau10[Math.floor(Math.random() * schemeTableau10.length)];
+              this.$scope.$emit("drop-model")
+            }
+          });
+        });
+      });
+      this.$rootScope.$on("a.remove-model", (ev, container) => {
+        getTheDataAttrsContent().forEach((c: any) => {
+          c.content.forEach((ca: any) => {
+            if (!ca.color) {
+              ca.color = null;
+              this.$scope.$emit("remove-model")
+            }
+          });
+        });
+      });
     }
     public getAttributes() {
-      const selectedChartType = this.$scope.configService.getSelectedChartType();
+      const selectedChartType =
+        this.$scope.configService.getSelectedChartType();
       return this.$scope.configService.getAttributesById(selectedChartType);
     }
   }

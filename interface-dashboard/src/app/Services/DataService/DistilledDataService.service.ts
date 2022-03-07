@@ -12,6 +12,7 @@ module edvl {
     queuedData!: any[];
     devices!: any;
     lastDataEvent!: any;
+    notNeededData: string[] = ["id", "updated", "name", "type"]
 
     public static $inject = ["$rootScope"];
     constructor(public $rootScope: IRootScopeService) {
@@ -33,7 +34,7 @@ module edvl {
         this.addDevice(innerData);
       }
       this.queuedData.push(innerData);     
-      this.lastDataEvent = innerData 
+      this.lastDataEvent = innerData       
       this.$rootScope.$broadcast("distilledData", this.lastDataEvent)
     }
 
@@ -66,12 +67,13 @@ module edvl {
         id: data.id,
         attributes: this.extractAttributes(data),
       });
+      
       this.$rootScope.$broadcast("device", this.devices)
     }
 
     private extractAttributes(data: any): any[] {      
       const attributes: any[] = [];
-      const avoid = ["type"];
+      const avoid = ["type", ...this.notNeededData];
       const entries = Object.entries(data);
       entries
         .filter((e) => !avoid.includes(e[0]))
@@ -83,7 +85,9 @@ module edvl {
             device: {
               type: data.type, 
               id: data.id
-            }
+            }, 
+            color: null, 
+            disabled: false
           });
         });
       return attributes;

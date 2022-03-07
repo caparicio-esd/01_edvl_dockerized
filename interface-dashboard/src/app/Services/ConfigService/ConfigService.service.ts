@@ -19,6 +19,9 @@ module edvl {
     public getSelectedChartType(): string {
       return this.selectedChartType
     }
+    public getActiveChartDataIndex() {
+      return this.chartsData.findIndex((ch: any) => ch.id == this.getSelectedChartType())
+    }
     public getChartDataById(id: string) {
       const chartType = this.chartsData.find((ch: any) => ch.id == id);
       return chartType;

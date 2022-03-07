@@ -3,17 +3,21 @@
     device_tag
     inline-flex
     items-center
-    bg-cyan-400
-    px-2
+    bg-gray-300
+    px-4
     py-1
     rounded-full
     cursor-grab
     hover:ring-4
-    ring-cyan-500 ring-opacity-25
-    mb-1
-    ml-1
+    ring-gray-500 ring-opacity-25
+    mb-2
+    mr-1
     text-xs
   "
+  ng-style="{
+    backgroundColor: vm.data.color || '', 
+    color: vm.data.color ? inverse(vm.data.color) : ''
+  }"
 >
   <span
     class="
@@ -36,7 +40,7 @@
   <span class="device_tag_name">{{vm.data.name}}</span>
   <span class="device_tag_separator hidden">-</span>
   <span class="device_tag_value hidden">{{vm.data.value}}</span>
-  <span class="device_tag_dot flex text-xs text-cyan-700 ml-2 items-center">
+  <span class="device_tag_dot flex text-xs text-cyan-700 ml-2 items-center hidden">
     <i class="ph-circle-fill flex items-center"></i>
   </span>
 </div>
