@@ -1,5 +1,8 @@
 import angular from "angular";
 import uiGrid from 'angular-ui-grid'
+import "angular-simple-logger"
+import "ui-leaflet"
+import "leaflet"
 import angularDragula from "angularjs-dragula";
 import ChartDirective from "./Components/Charts/Chart.directive";
 import ChartTypeDirective from "./Components/Charts/ChartType.directive";
@@ -23,7 +26,7 @@ import OrionConnectionService from "./Services/DataService/OrionConnectionServic
 import RawDataService from "./Services/DataService/RawDataService.service";
 
 export default angular
-  .module("edvl", [angularDragula(angular), uiGrid])
+  .module("edvl", [angularDragula(angular), uiGrid, "nemLogging", "ui-leaflet"])
   .directive(dummyDirective.slug, dummyDirective.instance())
   .directive(dummySimpleDirective.slug, dummySimpleDirective.instance())
   .directive(DashBoardItemDirective.slug, DashBoardItemDirective.instance())

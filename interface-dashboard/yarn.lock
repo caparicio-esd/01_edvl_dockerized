@@ -308,6 +308,14 @@ acorn@^7.0.0:
   resolved "https://registry.npmjs.org/acorn/-/acorn-7.4.1.tgz"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
+angular-simple-logger@^0.1.7, angular-simple-logger@~0.1.4:
+  version "0.1.7"
+  resolved "https://registry.npmjs.org/angular-simple-logger/-/angular-simple-logger-0.1.7.tgz"
+  integrity sha1-SuSOXqwJc/V3hFkY5W1JM89m8EE=
+  dependencies:
+    angular "^1.2"
+    debug "^2.2.0"
+
 angular-ui-grid@^4.11.0:
   version "4.11.0"
   resolved "https://registry.npmjs.org/angular-ui-grid/-/angular-ui-grid-4.11.0.tgz"
@@ -315,7 +323,7 @@ angular-ui-grid@^4.11.0:
   dependencies:
     angular ">=1.4.0 1.8.x"
 
-"angular@>=1.4.0 1.8.x", angular@^1.8.2:
+angular@1.x, "angular@>=1.4.0 1.8.x", angular@^1.2, angular@^1.8.2:
   version "1.8.2"
   resolved "https://registry.npmjs.org/angular/-/angular-1.8.2.tgz"
   integrity sha512-IauMOej2xEe7/7Ennahkbb5qd/HFADiNuLSESz9Q27inmi32zB0lnAsFeLEWcox3Gd1F6YhNd1CP7/9IukJ0Gw==
@@ -845,6 +853,13 @@ d3@^7.2.1:
     d3-transition "3"
     d3-zoom "3"
 
+debug@^2.2.0:
+  version "2.6.9"
+  resolved "https://registry.npmjs.org/debug/-/debug-2.6.9.tgz"
+  integrity sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==
+  dependencies:
+    ms "2.0.0"
+
 debug@~4.3.1, debug@~4.3.2:
   version "4.3.3"
   resolved "https://registry.npmjs.org/debug/-/debug-4.3.3.tgz"
@@ -1256,6 +1271,16 @@ json-parse-even-better-errors@^2.3.0:
   resolved "https://registry.npmjs.org/json-parse-even-better-errors/-/json-parse-even-better-errors-2.3.1.tgz"
   integrity sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==
 
+leaflet@0.7.x:
+  version "0.7.7"
+  resolved "https://registry.npmjs.org/leaflet/-/leaflet-0.7.7.tgz"
+  integrity sha1-HjUrpU5j0HZFH6NjyQCJDLLPde4=
+
+leaflet@^1.7.1:
+  version "1.7.1"
+  resolved "https://registry.npmjs.org/leaflet/-/leaflet-1.7.1.tgz"
+  integrity sha512-/xwPEBidtg69Q3HlqPdU3DnrXQOvQU/CCHA1tcDQVzOwm91YMYaILjNp7L4Eaw5Z4sOYdbBz6koWyibppd8Zqw==
+
 lilconfig@^2.0.3:
   version "2.0.4"
   resolved "https://registry.npmjs.org/lilconfig/-/lilconfig-2.0.4.tgz"
@@ -1290,6 +1315,11 @@ minimist@^1.1.1:
   version "1.2.5"
   resolved "https://registry.npmjs.org/minimist/-/minimist-1.2.5.tgz"
   integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
+
+ms@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/ms/-/ms-2.0.0.tgz"
+  integrity sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=
 
 ms@2.1.2:
   version "2.1.2"
@@ -2021,6 +2051,15 @@ typescript@^4.4.4:
   version "4.5.4"
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.5.4.tgz"
   integrity sha512-VgYs2A2QIRuGphtzFV7aQJduJ2gyfTljngLzjpfW9FoYZF6xuw1W0vW9ghCKLfcWrCFxK81CSGRAvS1pn4fIUg==
+
+ui-leaflet@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/ui-leaflet/-/ui-leaflet-1.0.3.tgz"
+  integrity sha1-vqQ8asDrjEaEg89yxc78NMejfPM=
+  dependencies:
+    angular "1.x"
+    angular-simple-logger "~0.1.4"
+    leaflet "0.7.x"
 
 uniq@^1.0.1:
   version "1.0.1"

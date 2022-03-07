@@ -10,7 +10,7 @@ module edvl {
 
     constructor() {
       this.chartsData = chartsData;
-      this.selectedChartType = "line-timeseries"
+      this.selectedChartType = "map"
     }
  
     public setSelectedChartType(chartType: string) {      

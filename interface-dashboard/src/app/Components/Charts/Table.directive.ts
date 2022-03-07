@@ -123,6 +123,7 @@ module edvl.TableDirective {
         this.$scope.createColumns(newValue, oldValue);
       });
 
+      // hide - show grid for grid viewport rendering
       this.$scope.$watch("selectedChartType()", (val) => {
         if (val == "table") {
           this.$scope.showGrid = true;
