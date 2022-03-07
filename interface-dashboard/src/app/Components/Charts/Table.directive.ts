@@ -5,6 +5,10 @@ import template from "./Table.template.html?raw";
 
 module edvl.TableDirective {
   export interface IScope extends ng.IScope {
+    showGrid: boolean;
+    name: string;
+    selectedChartType: () => string;
+    distilledData: DistilledDataServiceService;
     scroll: {
       x: number | undefined;
       y: number | undefined;
@@ -28,24 +32,25 @@ module edvl.TableDirective {
     constructor(
       private $scope: IScope,
       private distilledDataService: DistilledDataServiceService,
-      private configService: ConfigService,
-      private uiGridConstants: any
+      private configService: ConfigService
     ) {
-      // TODO swap columns
-      // TODO scrolled? so not autoscroll
-
       // sizing block
       const chartWrapper =
         document.querySelector<HTMLDivElement>(".chart_wrapper");
       this.$scope.size = chartWrapper?.getBoundingClientRect();
 
       // get columns from config block
-      this.$scope.configService = configService;
-      this.$scope.configData = configService.getAttributesById(
-        configService.selectedChartType
-      )[0].content;
+      this.$scope.name = "table";
+      this.$scope.configService = this.configService;
+      this.$scope.selectedChartType = () =>
+        configService.getSelectedChartType();
+      this.$scope.configData = () =>
+        configService.getAttributesById(this.$scope.name)[0].content;
+      this.$scope.distilledData = this.distilledDataService;
 
       //
+      this.$scope.data = [];
+      this.$scope.showGrid = false;
       this.$scope.gridOptions = {
         columnDefs: [
           {
@@ -54,15 +59,6 @@ module edvl.TableDirective {
           },
         ],
         data: [],
-        // customScroller: (uiGridViewPort: any, scrollHandler: any) => {
-        //   uiGridViewPort.on("scroll", (ev: Event) => {
-        //     //@ts-ignore
-        //     this.$scope.scroll.y = uiGridViewport[0].scrollTop;
-        //     //@ts-ignore
-        //     this.$scope.scroll.x = uiGridViewport[0].scrollLeft;
-        //     scrollHandler(ev);
-        //   });
-        // },
       };
 
       // add column
@@ -123,17 +119,23 @@ module edvl.TableDirective {
       };
 
       // add remove colummns observer
-      this.$scope.$watchCollection("configData", (newValue, oldValue) => {
+      this.$scope.$watchCollection("configData()", (newValue, oldValue) => {
         this.$scope.createColumns(newValue, oldValue);
       });
 
-      // add rows
-      this.distilledDataService.addObserver(() => {
-        const observationDate = new Date();
+      this.$scope.$watch("selectedChartType()", (val) => {
+        if (val == "table") {
+          this.$scope.showGrid = true;
+        } else {
+          this.$scope.showGrid = false;
+        }
+      });
 
-        // update rows
-        const shouldUpdate = this.$scope.configData.some((cd: any) => {
-          return cd.device.id == this.distilledDataService.lastDataEvent.id;
+      // add rows
+      this.$scope.$on("distilledData", (_, lastData) => {
+        const observationDate = new Date();
+        const shouldUpdate = this.$scope.configData().some((cd: any) => {
+          return cd.device.id == lastData.id;
         });
 
         if (shouldUpdate) {
@@ -142,14 +144,8 @@ module edvl.TableDirective {
           this.$scope.gridOptions.columnDefs.forEach((column: any) => {
             if (column.hasOwnProperty("config")) {
               const fieldName = normalizeName(column.config).field;
-              const lastEventField = normalizeColumnName(this.distilledDataService.lastDataEvent.id);
-              const currentValue = this.distilledDataService.lastDataEvent[column.config.name].value
-
-              // ======================== CHECKEAR DATOS REPETIDOS!!!!!! ========================
-              // console.log(this.distilledDataService.lastDataEvent[column.config.name].value);
-              // console.log(column);
-              // console.log(lastEventField);
-
+              const lastEventField = normalizeColumnName(lastData.id);
+              const currentValue = lastData[column.config.name].value;
               //@ts-ignore
               fieldObj[fieldName] = currentValue; // Populate with real data
             }
@@ -163,18 +159,6 @@ module edvl.TableDirective {
           this.$scope.$digest();
         }
 
-        // update scroll
-        // if (shouldAutoScroll) {
-        //   document
-        //     .querySelector(".ui-grid-viewport")
-        //     ?.scrollTo(0, Number.MAX_SAFE_INTEGER);
-        //   this.$scope.scroll = {
-        //     x: document.querySelector(".ui-grid-viewport")?.scrollLeft,
-        //     y: document.querySelector(".ui-grid-viewport")?.scrollTop,
-        //     height: document.querySelector(".ui-grid-viewport")?.scrollHeight
-        //   };
-        // }
-        // this.$scope.scroll.height = document.querySelector(".ui-grid-viewport")?.scrollHeight
         document
           .querySelector(".ui-grid-viewport")
           ?.scrollTo(0, Number.MAX_SAFE_INTEGER);

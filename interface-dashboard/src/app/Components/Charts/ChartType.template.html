@@ -1,5 +1,5 @@
 <div class="chart_wrapper h-full w-full flex items-center justify-center p-4">
-  <chart ng-show="configService.selectedChartType == 'line-timeseries'"></chart>
-  <table ng-show="configService.selectedChartType == 'table'"></table>
-  <map ng-show="configService.selectedChartType == 'map'"></map>
+  <chart ng-show="configService.getSelectedChartType() == 'line-timeseries'"></chart>
+  <table ng-show="configService.getSelectedChartType() == 'table'"></table>
+  <map ng-show="configService.getSelectedChartType() == 'map'"></map>
 </div>

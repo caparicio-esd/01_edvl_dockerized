@@ -5,6 +5,7 @@ import template from "./DashBoardItem.template.html?raw";
 
 module edvl.DashBoardItemDirective {
   export interface IScope extends ng.IScope {
+    distilledData: DistilledDataService;
     devices: any;
   }
   export interface IDirectiveController extends ng.IController {}
@@ -13,14 +14,12 @@ module edvl.DashBoardItemDirective {
     constructor(
       private $scope: IScope,
       private distilledDataService: DistilledDataService, 
-      private rawDataService: RawDataService
     ) {
-      const self = this
       this.$scope.devices = [];
-      this.distilledDataService.addObserver(() => {         
-        self.$scope.devices = self.distilledDataService.devices;
-        self.$scope.$digest();        
-      });
+      this.$scope.$on("device", (_, devices) => {        
+        this.$scope.devices = devices
+        this.$scope.$digest()
+      })
     }
     public $onInit() {}
     public $postLink() {}

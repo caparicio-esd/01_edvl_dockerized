@@ -26,10 +26,10 @@ module edvl.ConfigChartBlocksDirective {
 
       this.$scope.configService = ConfigService;
       this.$scope.dragulaScope = []
-      this.$scope.attrs = ConfigService.getAttributesById(
+      this.$scope.attrs = this.ConfigService.getAttributesById(
         ConfigService.selectedChartType
       );
-      dragulaService.options($rootScope, "a", {
+      this.dragulaService.options(this.$rootScope, "a", {
         removeOnSpill: (_: HTMLElement, source: HTMLElement) => {
           return !source.classList.contains("dragula_chartBlocks");
         },
@@ -42,7 +42,7 @@ module edvl.ConfigChartBlocksDirective {
       });
     }
     public getAttributes() {
-      const selectedChartType = this.$scope.configService.selectedChartType;
+      const selectedChartType = this.$scope.configService.getSelectedChartType();
       return this.$scope.configService.getAttributesById(selectedChartType);
     }
   }

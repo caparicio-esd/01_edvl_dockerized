@@ -16,7 +16,7 @@
     "
     ng-class="[{'bg-slate-700': chartType.id == configService.selectedChartType}, {'bg-slate-400': chartType.id != configService.selectedChartType}]"
     ng-repeat="chartType in configService.chartsData track by chartType.id"
-    ng-click="configService.selectChartType(chartType.id)"
+    ng-click="configService.setSelectedChartType(chartType.id)"
   >
     <i ng-class="['ph-' + chartType.icon + '-bold', 'text-white', 'flex']"></i>
   </div>

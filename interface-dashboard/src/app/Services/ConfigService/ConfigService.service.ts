@@ -8,14 +8,16 @@ module edvl {
     chartsData: any;
     selectedChartType: string;
 
-    constructor(private $rootScope: IRootScopeService) {
+    constructor() {
       this.chartsData = chartsData;
-      // this.selectedChartType = "table";
       this.selectedChartType = "line-timeseries"
     }
  
-    public selectChartType(chartType: string) {
+    public setSelectedChartType(chartType: string) {      
       this.selectedChartType = chartType;
+    }
+    public getSelectedChartType(): string {
+      return this.selectedChartType
     }
     public getChartDataById(id: string) {
       const chartType = this.chartsData.find((ch: any) => ch.id == id);

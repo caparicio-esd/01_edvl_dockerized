@@ -5,8 +5,10 @@ import TimeSeries from "./ChartFactory/TimeSeries";
 
 module edvl.ChartDirective {
   export interface IScope extends ng.IScope {
+    name: string;
+    selectedChartType: () => string;
     distilledData: DistilledDataServiceService;
-    configData: any[];
+    configData: () => any[];
     chartLabels: { x: string; y: string; source: string };
     chart: TimeSeries;
     chartBind: HTMLDivElement | null;
@@ -19,30 +21,35 @@ module edvl.ChartDirective {
       private distilledDataService: DistilledDataServiceService,
       private configService: ConfigService
     ) {
+      //
+      this.$scope.name = "line-timeseries"
       this.$scope.chartLabels = {
         x: "Updated time",
         y: "Temperature",
         source: "source...",
       };
+      
+      //
       this.$scope.chartBind = document.querySelector<HTMLDivElement>(".chart");
       this.$scope.chart = new TimeSeries(this.$scope.chartBind);
-      this.$scope.configData = configService.getAttributesById(
-        configService.selectedChartType
-      )[0].content;
+  
+      //
+      this.$scope.selectedChartType = () => configService.getSelectedChartType()
+      this.$scope.configData = () => configService.getAttributesById(this.$scope.name)[0].content;
       this.$scope.distilledData = distilledDataService;
 
-      // add remove colummns observer
-      this.$scope.$watchCollection("configData", () => {
-        this.$scope.chart.update(null, this.$scope.configData);
+      // add remove lines
+      this.$scope.$watchCollection("configData()", () => {
+        this.$scope.chart.update(null, this.$scope.configData());
       });
 
       // add queued data observer
-      this.$scope.$watchCollection("distilledData.queuedData", () => {
-        const shouldUpdate = this.$scope.configData.some((cd) => {
-          return cd.device.id == this.distilledDataService.lastDataEvent.id;
+      this.$scope.$on("distilledData", (_, lastData) => {    
+        const shouldUpdate = this.$scope.configData().some((cd) => {
+          return cd.device.id == lastData.id;
         });
         if (shouldUpdate) {
-          this.$scope.chart.update(this.distilledDataService.lastDataEvent, this.$scope.configData);
+          this.$scope.chart.update(lastData, this.$scope.configData());
         }
       });
     }

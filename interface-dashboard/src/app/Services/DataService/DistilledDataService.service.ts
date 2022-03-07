@@ -1,4 +1,4 @@
-import { IController } from "angular";
+import { IController, IRootScopeService, IScope } from "angular";
 
 export interface Observable {
   observers: (() => void)[];
@@ -7,30 +7,19 @@ export interface Observable {
 }
 
 module edvl {
-  export class DistilledDataService implements Observable {
+  export class DistilledDataService {
     maxQueueSize: number = 150;
     queuedData!: any[];
     devices!: any;
-    observers!: (() => void)[];
     lastDataEvent!: any;
 
-    public static $inject = [];
-    constructor() {
+    public static $inject = ["$rootScope"];
+    constructor(public $rootScope: IRootScopeService) {
       this.queuedData = [];
       this.devices = [];
-      this.observers = [];
       this.lastDataEvent = {}
     }
 
-    public addObserver(callback: () => void): void {      
-      this.observers.push(callback);      
-    }
-
-    public notifyObservers(): void {      
-      this.observers.forEach((obs: () => void) => {
-        obs();
-      });
-    }
 
     public processIncomingData(data: any) {      
       const innerData = data.data[0];
@@ -45,7 +34,7 @@ module edvl {
       }
       this.queuedData.push(innerData);     
       this.lastDataEvent = innerData 
-      this.notifyObservers();
+      this.$rootScope.$broadcast("distilledData", this.lastDataEvent)
     }
 
     private hasDeviceType(data: any): boolean {
@@ -77,6 +66,7 @@ module edvl {
         id: data.id,
         attributes: this.extractAttributes(data),
       });
+      this.$rootScope.$broadcast("device", this.devices)
     }
 
     private extractAttributes(data: any): any[] {      
