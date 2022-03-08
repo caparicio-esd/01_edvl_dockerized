@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import fakeData from "../../../Services/DataService/fakeData";
+import { differenceWith } from "lodash";
 
 interface D3Chart {
   createCanvas: () => void;
@@ -67,6 +67,7 @@ export default class TimeSeries implements D3Chart {
   followScale!: d3.ScaleTime<number, number, never>;
   extents!: any[];
   globalExtent!: { value: any[]; date: any[] };
+  configData: any[];
 
   /**
    *
@@ -89,9 +90,8 @@ export default class TimeSeries implements D3Chart {
       h: chartParentSelection!.getBoundingClientRect().height,
     };
 
-    // REFACTOR THIS
-    // this.cleanData();
     this.data = [];
+    this.configData = [];
     this.draw();
   }
 
@@ -113,23 +113,64 @@ export default class TimeSeries implements D3Chart {
   /**
    *
    */
-  processData(newData: any, configData: any) {
-    // newData puede ser null, si es un cambio de devices
-    if (newData) {
-      // if new device
-      if (this.data.findIndex((d) => d.id == newData.id) < 0) {
+  processData(newData: any, newconfigData: any) {
+    if (!newData) {
+      if (newconfigData.length > this.configData.length) {
+        // case new
+        const difference = differenceWith(
+          newconfigData,
+          this.configData,
+          (n: any, o: any) => {
+            return (
+              o.device != undefined &&
+              n.device.id == o.device.id &&
+              n.name == o.name
+            );
+          }
+        );
         this.data.push({
-          id: newData.id,
-          type: newData.type,
-          value: configData[configData.length - 1].name,
-          valueType: configData[configData.length - 1].type,
+          id: difference[0].device.id,
+          type: difference[0].device.type,
+          value: difference[0].name,
+          valueType: difference[0].type,
+          color: difference[0].color,
           data: [],
         });
+      } else if (newconfigData.length < this.configData.length) {
+        // case away
+        const difference = differenceWith(
+          this.configData,
+          newconfigData,
+          (n: any, o: any) => {
+            return (
+              o.device != undefined &&
+              n.device.id == o.device.id &&
+              n.name == o.name
+            );
+          }
+        );
+        const differenceDataIdx =
+          difference != undefined
+            ? this.data.findIndex(
+                (d) =>
+                  d.id == difference[0].device.id &&
+                  d.value == difference[0].name
+              )
+            : -1;
+        this.data.splice(differenceDataIdx, 1);
+      } else {
+        // nothing
       }
-
-      // all devices
-      const dBucket = this.data.find((d) => d.id == newData.id);
-      dBucket.data.push([newData[dBucket.value].value, newData.updated.value]);
+      this.configData = [...newconfigData];
+    } else {
+      const dBuckets = this.data.filter((d) => d.id == newData.id);
+      dBuckets.forEach((db) => {
+        db.data.push([
+          newData[db.value].value,
+          newData.updated.value,
+          db.color,
+        ]);
+      });
     }
   }
 
@@ -301,7 +342,7 @@ export default class TimeSeries implements D3Chart {
       .x((d: any) => this.followScale(new Date(d[1])))
       .y((d: any) => this.y(d[0]));
 
-    //   draw and update line
+    // draw and update line
     this.geometry.chartContent
       .selectAll("path")
       .data(this.data)
@@ -311,7 +352,7 @@ export default class TimeSeries implements D3Chart {
             .append("path")
             .attr("d", (d: any) => lineGenerator(d.data))
             .attr("fill", "none")
-            .attr("stroke", "#8fd1db")
+            .attr("stroke", (d: any) => d.color)
             .attr("stroke-width", 2)
             .attr("clip-path", "url(#clip-path-id)");
         },
@@ -322,26 +363,27 @@ export default class TimeSeries implements D3Chart {
       );
 
     // draw and update dots in line
-    this.geometry.chartContent
-      .selectAll("circle")
-      .data(this.data.flatMap((d) => d.data))
-      .join(
-        (enter: any) => {
-          enter
-            .append("circle")
-            .attr("cx", (d: any) => this.followScale(new Date(d[1])))
-            .attr("cy", (d: any) => this.y(d[0]))
-            .attr("r", 3)
-            .attr("fill", "#0d7490")
-            .attr("fill-opacity", 0.8)
-            .attr("clip-path", "url(#clip-path-id)");
-        },
-        (update: any) => {
-          update
-            .attr("cx", (d: any) => this.followScale(new Date(d[1])))
-            .attr("cy", (d: any) => this.y(d[0]));
-        }
-      );
+    const chartContentGroups = this.geometry.chartContent
+      .selectAll("g")
+      .data(this.data)
+      .join((enter: any) => {
+        enter.append("g").attr("class", "circles").attr("clip-path", "url(#clip-path-id)");
+      });
+    chartContentGroups.selectAll("circle").data((d: any) => d.data).join(
+      (enter: any) => {
+        enter.append("circle")
+        .attr("cx", (d: any) => this.followScale(new Date(d[1])))
+        .attr("cy", (d: any) => this.y(d[0]))
+        .attr("r", 3)
+        .attr("fill", (d: any) => d[2])
+        .attr("fill-opacity", 0.8)
+      }, 
+      (update: any) => {
+        update
+        .attr("cx", (d: any) => this.followScale(new Date(d[1])))
+        .attr("cy", (d: any) => this.y(d[0]));
+      }
+    )
   }
 
   /**
