@@ -2,10 +2,10 @@ import template from "./ConfigChartBlocks.template.html?raw";
 import ConfigServiceService from "../../Services/ConfigService/ConfigService.service";
 import { IRootScopeService } from "angular";
 import { schemeTableau10 } from "d3";
-console.log(schemeTableau10);
 
 module edvl.ConfigChartBlocksDirective {
   export interface IScope extends ng.IScope {
+    currentDataAttrsContent: any;
     dragulaScope: {};
     jarl: any[];
     attrs: any;
@@ -30,6 +30,7 @@ module edvl.ConfigChartBlocksDirective {
       this.$scope.attrs = this.ConfigService.getAttributesById(
         ConfigService.selectedChartType
       );
+      this.$scope.currentDataAttrsContent = [];
 
       this.dragulaService.options(this.$rootScope, "a", {
         removeOnSpill: (_: HTMLElement, source: HTMLElement) => {
@@ -48,27 +49,31 @@ module edvl.ConfigChartBlocksDirective {
         const activeIndex = this.$scope.configService.getActiveChartDataIndex();
         const chartsData = this.$scope.configService.chartsData[activeIndex];
         const chartDataAttrs = chartsData.attributes;
-        return chartDataAttrs
-      }
+        return chartDataAttrs;
+      };
       this.$rootScope.$on("a.drop-model", (ev, target, source) => {
-        getTheDataAttrsContent().forEach((c: any) => {
+        const gtdac = getTheDataAttrsContent();
+        gtdac.forEach((c: any) => {
           c.content.forEach((ca: any) => {
+            this.$scope.currentDataAttrsContent.push(ca);
             if (!ca.color) {
-              ca.color = schemeTableau10[Math.floor(Math.random() * schemeTableau10.length)];
-              this.$scope.$emit("drop-model")
+              ca.color =
+                schemeTableau10[
+                  Math.floor(Math.random() * schemeTableau10.length)
+                ];
+              this.$scope.$emit("drop-model", ca);
             }
           });
         });
       });
       this.$rootScope.$on("a.remove-model", (ev, container) => {
-        getTheDataAttrsContent().forEach((c: any) => {
-          c.content.forEach((ca: any) => {
-            if (!ca.color) {
-              ca.color = null;
-              this.$scope.$emit("remove-model")
-            }
-          });
+        this.$scope.currentDataAttrsContent.forEach((ca: any) => {
+          if (ca.color != null) {
+            this.$scope.$emit("remove-model", ca);
+            ca.color = null;
+          }
         });
+        this.$scope.currentDataAttrsContent = [];
       });
     }
     public getAttributes() {

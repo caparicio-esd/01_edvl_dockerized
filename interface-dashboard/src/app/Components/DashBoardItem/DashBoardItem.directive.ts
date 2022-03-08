@@ -20,12 +20,19 @@ module edvl.DashBoardItemDirective {
         this.$scope.devices = devices
         this.$scope.$digest()
       })
+      const getTheDataAttrsContent = (attribute: any) => {
+        const sensorType = this.$scope.devices.find((d: any) => d.name == attribute.device.type)
+        const sensorEntity = sensorType.content.find((d: any) => d.id == attribute.device.id)
+        const attributeIndex = sensorEntity.attributes.find((a: any) => a.name == attribute.name)
+        return attributeIndex
+      }
+      this.$scope.$on("drop-model", (_, attribute) => {
+        getTheDataAttrsContent(attribute).color = attribute.color
+      })
+      this.$scope.$on("remove-model", (_, attribute) => {        
+        getTheDataAttrsContent(attribute).color = null
+      })
     }
-    public $onInit() {}
-    public $postLink() {}
-    public $doCheck() {}
-    public $onChanges(_: ng.IOnChangesObject) {}
-    public $onDestroy() {}
   }
 
   export class Directive implements ng.IDirective {
