@@ -5,7 +5,7 @@ from numpy import random as np_random
 from .constants import DEBUG
 from .OrionConnector import OrionConnector
 from .Device import Device
-
+import numpy as np
 
 
 class Sensor(Device): 
@@ -25,7 +25,7 @@ class Sensor(Device):
 
     geoLocation: List[float] = [0., 0.]
     geoLocationCenter: List[float] = [-3.3, 40.2]
-    geoLocationRadius: float = 0.4
+    geoLocationRadius: float = 10
 
     timer: threading.Timer = None
     timerSeconds: int = 3
@@ -44,8 +44,11 @@ class Sensor(Device):
         """
         Create device hook and Orion Context Broker connection
         """
-        self.geoLocation[0] = self.geoLocationCenter[0] + np_random.normal(0, self.geoLocationRadius)
-        self.geoLocation[1] = self.geoLocationCenter[1] + np_random.normal(0, self.geoLocationRadius)
+        # self.geoLocation[0] = self.geoLocationCenter[0] + np_random.normal(0, self.geoLocationRadius)
+        # self.geoLocation[1] = self.geoLocationCenter[1] + np_random.normal(0, self.geoLocationRadius)
+        self.geoLocation[0] = self.geoLocationCenter[0] + np.random.random_sample(1)[0] * self.geoLocationRadius
+        self.geoLocation[1] = self.geoLocationCenter[1] + np.random.random_sample(1)[0] * self.geoLocationRadius
+        print(self.geoLocation)
         OrionConnector.createEntity(self.orion_format())
 
     def _run(self) -> None:
@@ -63,7 +66,9 @@ class Sensor(Device):
         """
         self.temperature = np_random.normal(self.temperatureCenter, self.temperatureRadius)
         self.humidity = np_random.normal(self.humidityCenter, self.humidityRadius)
-        OrionConnector.updateEntity(self.orion_format(), ["temperature", "humidity", "updated"])
+        self.geoLocation[0] = self.geoLocationCenter[0] + np.random.random_sample(1)[0] * self.geoLocationRadius
+        self.geoLocation[1] = self.geoLocationCenter[1] + np.random.random_sample(1)[0] * self.geoLocationRadius
+        OrionConnector.updateEntity(self.orion_format(), ["temperature", "humidity", "updated", "location"])
         if (self.debug or DEBUG): print(self)
         self._run()
 
