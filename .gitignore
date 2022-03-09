@@ -6,3 +6,4 @@ dist
 dist-ssr
 *.local
 TODO
+context-server/**/__pycache__/
