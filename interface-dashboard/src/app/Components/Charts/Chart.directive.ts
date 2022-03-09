@@ -41,7 +41,7 @@ module edvl.ChartDirective {
       this.$scope.distilledData = distilledDataService;
 
       // add remove lines
-      this.$scope.$watchCollection("configData()", (nv: any[], ov: any[]) => {
+      this.$scope.$watchCollection("configData()", (_: any[], __: any[]) => {
         this.$scope.chart.update(null, this.$scope.configData());
       });
 

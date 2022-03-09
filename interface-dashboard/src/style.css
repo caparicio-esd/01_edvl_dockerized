@@ -31,3 +31,7 @@
   min-height: 600px;
 } */
 
+.leaflet-div-icon {
+  background: transparent !important;
+  border: 0 !important;
+}

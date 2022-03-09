@@ -32,6 +32,7 @@ module edvl.ConfigChartBlocksDirective {
       );
       this.$scope.currentDataAttrsContent = [];
 
+      // configs
       this.dragulaService.options(this.$rootScope, "a", {
         removeOnSpill: (_: HTMLElement, source: HTMLElement) => {
           return !source.classList.contains("dragula_chartBlocks");
@@ -44,6 +45,19 @@ module edvl.ConfigChartBlocksDirective {
         },
       });
 
+
+      //doing stuff
+      this.$rootScope.$on("a.drop", (_, _1, _2) => {
+        // translate model
+
+        // assign color to model in sensor and model in devices
+
+        // prevent to 
+      })
+
+
+
+
       // colors in new tabs
       const getTheDataAttrsContent = () => {
         const activeIndex = this.$scope.configService.getActiveChartDataIndex();
@@ -51,7 +65,10 @@ module edvl.ConfigChartBlocksDirective {
         const chartDataAttrs = chartsData.attributes;
         return chartDataAttrs;
       };
-      this.$rootScope.$on("a.drop-model", (ev, target, source) => {
+      this.$rootScope.$on("a.drop-model", (_0, _1, _2) => {
+        //
+
+        //
         const gtdac = getTheDataAttrsContent();
         gtdac.forEach((c: any) => {
           c.content.forEach((ca: any) => {
@@ -66,7 +83,9 @@ module edvl.ConfigChartBlocksDirective {
           });
         });
       });
-      this.$rootScope.$on("a.remove-model", (ev, container) => {
+      this.$rootScope.$on("a.remove-model", (_0, _1) => {
+        console.log("super eta...")
+
         this.$scope.currentDataAttrsContent.forEach((ca: any) => {
           if (ca.color != null) {
             this.$scope.$emit("remove-model", ca);
@@ -75,6 +94,11 @@ module edvl.ConfigChartBlocksDirective {
         });
         this.$scope.currentDataAttrsContent = [];
       });
+
+
+
+
+
     }
     public getAttributes() {
       const selectedChartType =

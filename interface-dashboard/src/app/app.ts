@@ -22,6 +22,7 @@ import ConfigService from "./Services/ConfigService/ConfigService.service";
 import DistilledDataService from "./Services/DataService/DistilledDataService.service";
 import OrionConnectionService from "./Services/DataService/OrionConnectionService.service";
 import RawDataService from "./Services/DataService/RawDataService.service";
+import { createUniqueAttribute, createUniqueDOMAttribute, createUniqueIdFromDevice } from "./utils";
 
 export default angular
   .module("edvl", [angularDragula(angular), uiGrid, "nemLogging", "ui-leaflet"])
@@ -39,9 +40,15 @@ export default angular
   .directive(ChartDirective.slug, ChartDirective.instance())
   .directive(TableDirective.slug, TableDirective.instance())
   .directive(MapDirective.slug, MapDirective.instance())
-
   .service(ConfigService.name, ConfigService)
   .service(RawDataService.name, RawDataService)
   .service(DistilledDataService.name, DistilledDataService)
   .service(OrionConnectionService.name, OrionConnectionService)
+  
+  .run(($rootScope: any)=> {
+    $rootScope.utils = {}
+    $rootScope.utils.createUniqueIdFromDevice = createUniqueIdFromDevice
+    $rootScope.utils.createUniqueAttribute = createUniqueAttribute
+    $rootScope.utils.createUniqueDOMAttribute = createUniqueDOMAttribute
 
+  })

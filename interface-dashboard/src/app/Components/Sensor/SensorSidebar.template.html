@@ -23,6 +23,7 @@
                 <div dragula="'a'" dragula-model="device.attributes" dragula-scope="vm.$rootScope">
                   <device-tag
                     ng-repeat="attr in device.attributes"
+                    ng-attr-id="{{vm.$rootScope.utils.createUniqueDOMAttribute(attr)}}"
                     data="attr"
                   ></device-tag>
                 </div>

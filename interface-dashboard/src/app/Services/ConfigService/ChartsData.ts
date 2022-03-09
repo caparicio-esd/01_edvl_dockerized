@@ -36,11 +36,11 @@ export default [
         id: "location",
         content: [],
       },
-      {
-        name: "Size",
-        id: "size",
-        content: [],
-      },
+      // {
+      //   name: "Size",
+      //   id: "size",
+      //   content: [],
+      // },
     ],
   },
 ];

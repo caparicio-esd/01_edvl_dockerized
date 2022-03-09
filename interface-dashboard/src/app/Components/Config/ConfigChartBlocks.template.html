@@ -6,7 +6,7 @@
     class="chart_config_block mt-2"
     ng-repeat="attribute in vm.getAttributes() track by $index"
   >
-  {{attribute}}
+  
     <h3
       class="chart_config_block_heading flex items-center mb-1"
       ng-class="[attribute.id]"
@@ -17,12 +17,13 @@
       <span class="label flex items-center">{{attribute.name}}</span>
     </h3>
     <div
-      class="chart_config_block_content border border-solid border-slate-300 bg-slate-50 rounded h-20"
+      class="chart_config_block_content border border-solid border-slate-300 bg-slate-50 rounded min-h-[80px]"
     >
       <div dragula="'a'" class="h-full dragula_chartBlocks p-2" dragula-scope="vm.$rootScope" dragula-model="attribute.content">
         <device-tag
           ng-repeat="attr in attribute.content track by $index"
           data="attr"
+          ng-attr-id="{{vm.$rootScope.utils.createUniqueDOMAttribute(attr)}}"
         ></device-tag>
       </div>
     </div>
