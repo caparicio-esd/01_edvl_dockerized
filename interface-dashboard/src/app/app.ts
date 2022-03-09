@@ -40,15 +40,14 @@ export default angular
   .directive(ChartDirective.slug, ChartDirective.instance())
   .directive(TableDirective.slug, TableDirective.instance())
   .directive(MapDirective.slug, MapDirective.instance())
-  .service(ConfigService.name, ConfigService)
-  .service(RawDataService.name, RawDataService)
-  .service(DistilledDataService.name, DistilledDataService)
-  .service(OrionConnectionService.name, OrionConnectionService)
+  .service("ConfigService", ConfigService)
+  .service("RawDataService", RawDataService)
+  .service("DistilledDataService", DistilledDataService)
+  .service("OrionConnectionService", OrionConnectionService)
   
-  .run(($rootScope: any)=> {
+  .run(["$rootScope", ($rootScope: any)=> {
     $rootScope.utils = {}
     $rootScope.utils.createUniqueIdFromDevice = createUniqueIdFromDevice
     $rootScope.utils.createUniqueAttribute = createUniqueAttribute
     $rootScope.utils.createUniqueDOMAttribute = createUniqueDOMAttribute
-
-  })
+  }])
