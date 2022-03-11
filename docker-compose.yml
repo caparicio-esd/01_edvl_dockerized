@@ -3,6 +3,15 @@ version: '3.9'
 # https://stackoverflow.com/questions/42232051/docker-compose-volumes-from-equivalent-with-version-3
 
 services: 
+    draco:
+        image: ging/fiware-draco
+        container_name: draco
+        depends_on:
+            - orion
+        environment:
+        ports:
+            - "9090:9090"
+
     orion: 
         image: fiware/orion:latest
         container_name: orion
@@ -94,7 +103,6 @@ services:
                 yarn --cwd /usr/src/app
                 && yarn --cwd /usr/src/app dev
             "
-    
 
 networks: 
     default:
